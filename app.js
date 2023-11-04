@@ -28,10 +28,6 @@ io.on('connection', (socket) => {
 
     socket.on('audioData', (audioBlob) => {
         audioBuffer.push(audioBlob);
-    });
-
-    socket.on('stopRecording', () => {
-        console.log('Recording stopped');
         const audioBufferConcatenated = Buffer.concat(audioBuffer);
         fs.writeFile('temp.webm', audioBufferConcatenated, (err) => {
             if (err) {
@@ -77,6 +73,10 @@ io.on('connection', (socket) => {
                 });
             }
         });
+    });
+
+    socket.on('stopRecording', () => {
+        console.log('Recording stopped');
     });
 
     socket.on('disconnect', () => {
