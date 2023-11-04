@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audio Recording</title>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <textarea id="transcript"></textarea>
+    <button id="recordButton">Record</button>
+    
+    <script>
+       const recordButton = document.getElementById('recordButton');
+const socket = io();
+
+let mediaRecorder;
+let audioChunks = [];
+let recording = false; // Indicates whether recording is in progress
+
+recordButton.addEventListener('click', () => {
+    if (!recording) {
+        startRecording();
+        recordButton.textContent = 'Stop';
+    } else {
+        stopRecording();
+        recordButton.textContent = 'Record';
+    }
+});
+
+function startRecording() {
+    audioChunks = [];
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function (stream) {
+            mediaRecorder = new MediaRecorder(stream);
+
+            mediaRecorder.ondataavailable = function (event) {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
+                }
+            };
+
+            mediaRecorder.onstart = function () {
+                socket.emit('startRecording');
+                recording = true;
+            };
+
+            mediaRecorder.onstop = function () {
+                const audioBlob = new Blob(audioChunks);
+                socket.emit('audioData', audioBlob);
+                recording = false;
+            };
+
+            mediaRecorder.start();
+        })
+        .catch(function (error) {
+            console.error('Error accessing the microphone:', error);
+        });
+}
+
+function stopRecording() {
+    if (mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        socket.emit('stopRecording');
+    }
+}
+
+socket.on('transcript', (data) => {
+    console.log(data);
+    document.getElementById('transcript').value = data;
+});
+
+    </script>
+</body>
+</html>
