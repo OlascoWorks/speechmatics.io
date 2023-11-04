@@ -1,0 +1,24 @@
+{
+  "name": "speechmatics.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OlascoWorks/speechmatics.io.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OlascoWorks/speechmatics.io/issues"
+  },
+  "homepage": "https://github.com/OlascoWorks/speechmatics.io#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "speechmatics": "^3.1.2"
+  }
+}
